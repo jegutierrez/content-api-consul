@@ -1,0 +1,27 @@
+version: "3"
+services:
+  db:
+    build: ./postgres
+    ports:
+      - "5432:5432"
+      - "8500:8500"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+  nginx:
+    build: ./nginx
+    depends_on:
+      - app
+    ports:
+      - "8000:80"
+  app:
+    build: ./app
+    depends_on:
+      - db
+    ports:
+      - 6000
+    environment:
+      POSTGRES_DB_HOST: postgres.service.consul
+      POSTGRES_DB_NAME: contents
+      POSTGRES_DB_PORT: 5432
+      POSTGRES_DB_USER: postgres
+      POSTGRES_DB_PASSWORD: postgres

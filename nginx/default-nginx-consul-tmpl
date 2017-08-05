@@ -1,0 +1,18 @@
+upstream app {
+    {{ range service "app"}}
+    server {{.Address}}:{{.Port}};{{end}}
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+
+    root /app;
+    index index.html index.htm;
+
+    server_name localhost;
+
+    location / {
+        proxy_pass http://app;
+    }
+}
